@@ -11,6 +11,6 @@ int myfact(int n)
 int main()
 {
     int sum=myfact(99);
-    printf("你好",sum);
+    printf("你好%f",sum);
     return 0;
 }
