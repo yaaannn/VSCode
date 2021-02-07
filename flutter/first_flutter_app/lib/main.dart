@@ -4,12 +4,60 @@ void main() {
   runApp(MyApp());
 }
 
+Map<String, WidgetBuilder> routes;
+
+class NewRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("New route"),
+      ),
+      body: Center(
+        child: Text("This is new route"),
+      ),
+    );
+  }
+}
+
+class TipRoute extends StatelessWidget {
+  TipRoute({
+    Key key,
+    @required this.text, // 接收一个text参数
+  }) : super(key: key);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("提示"),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(18),
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Text(text),
+              RaisedButton(
+                onPressed: () => Navigator.pop(context, "我是返回值"),
+                child: Text("返回"),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      initialRoute: "/",
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -25,8 +73,13 @@ class MyApp extends StatelessWidget {
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        "new_page": (context) => NewRoute(),
+        "/":(context) => MyHomePage(title: 'Flutter Demo Home Page'), //注册首页路由
+      },
+      //home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -47,6 +100,33 @@ class MyHomePage extends StatefulWidget {
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
+}
+
+class RouterTestRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RaisedButton(
+        onPressed: () async {
+          // 打开`TipRoute`，并等待返回结果
+          var result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return TipRoute(
+                  // 路由参数
+                  text: "我是提示xxxx",
+                );
+              },
+            ),
+          );
+          //输出`TipRoute`路由返回结果
+          print("路由返回值: $result");
+        },
+        child: Text("打开提示页"),
+      ),
+    );
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -97,6 +177,25 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            FlatButton(
+              child: Text("Open New Route"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.pushNamed(context, "new_page");
+                // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                //   return NewRoute();
+                // }));
+              },
+            ),
+            FlatButton(
+              child: Text("Open New Route"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return RouterTestRoute();
+                }));
+              },
+            ),
             Text(
               'You have pushed the button this many times:',
             ),
