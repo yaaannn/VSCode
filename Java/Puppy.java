@@ -1,7 +1,6 @@
 
 public class Puppy{
     public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		
 		double x = 4;
 		double y=Math.sqrt(x);
